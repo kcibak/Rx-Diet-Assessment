@@ -314,7 +314,7 @@ function App() {
           <div style={styles.heroHeader}>
             <div>
               <p style={{ ...styles.muted, marginBottom: '10px' }}>REST API demo frontend</p>
-              <h1 style={styles.heroTitle}>Giftogram Chat Tester</h1>
+              <h1 style={styles.heroTitle}>RX Diet Assessment Demo</h1>
               <p style={styles.heroText}>
                 Minimal single-page React UI for exercising auth, users, messaging,
                 and blocking endpoints against the local backend.
