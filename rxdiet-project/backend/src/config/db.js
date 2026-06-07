@@ -1,24 +1,18 @@
-const mysql = require("mysql2/promise");
+const { Pool } = require("pg");
 
 let pool;
 
 function createDbPool() {
-  const requiredEnv = ["DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME"];
-  const missing = requiredEnv.filter((key) => !process.env[key]);
-
-  if (missing.length) {
-    throw new Error(`Missing required database env vars: ${missing.join(", ")}`);
+  if (!process.env.DATABASE_URL) {
+    throw new Error("Missing required database env var: DATABASE_URL");
   }
 
-  return mysql.createPool({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT) || 3306,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
+  return new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: shouldUseSsl(process.env.DATABASE_URL)
+      ? { rejectUnauthorized: false }
+      : false,
+    max: Number(process.env.DB_POOL_MAX) || 10,
   });
 }
 
@@ -38,6 +32,21 @@ async function checkDatabaseHealth() {
     status: "ok",
     database: "up",
   };
+}
+
+function shouldUseSsl(databaseUrl) {
+  try {
+    const parsed = new URL(databaseUrl);
+    const host = parsed.hostname;
+
+    if (["localhost", "127.0.0.1", "::1"].includes(host)) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    return true;
+  }
 }
 
 module.exports = {

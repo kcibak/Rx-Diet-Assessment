@@ -13,13 +13,13 @@ function mapMessageRow(row) {
 function createMessageRepository({ db = getDbPool() } = {}) {
   return {
     async createMessage({ publicId, senderId, receiverId, message, epoch }) {
-      await db.execute(
+      await db.query(
         `INSERT INTO messages (public_id, sender_id, receiver_id, message, epoch)
-         VALUES (?, ?, ?, ?, ?)`,
+         VALUES ($1, $2, $3, $4, $5)`,
         [publicId, senderId, receiverId, message, epoch]
       );
 
-      const [rows] = await db.execute(
+      const { rows } = await db.query(
         `SELECT m.public_id,
                 sender.public_id AS sender_public_id,
                 receiver.public_id AS receiver_public_id,
@@ -28,7 +28,7 @@ function createMessageRepository({ db = getDbPool() } = {}) {
          FROM messages m
          INNER JOIN users sender ON sender.id = m.sender_id
          INNER JOIN users receiver ON receiver.id = m.receiver_id
-         WHERE m.public_id = ?
+         WHERE m.public_id = $1
          LIMIT 1`,
         [publicId]
       );
@@ -37,7 +37,7 @@ function createMessageRepository({ db = getDbPool() } = {}) {
     },
 
     async findConversationByUserIds(userIdA, userIdB) {
-      const [rows] = await db.execute(
+      const { rows } = await db.query(
         `SELECT m.public_id,
                 sender.public_id AS sender_public_id,
                 receiver.public_id AS receiver_public_id,
@@ -46,8 +46,8 @@ function createMessageRepository({ db = getDbPool() } = {}) {
          FROM messages m
          INNER JOIN users sender ON sender.id = m.sender_id
          INNER JOIN users receiver ON receiver.id = m.receiver_id
-         WHERE (m.sender_id = ? AND m.receiver_id = ?)
-            OR (m.sender_id = ? AND m.receiver_id = ?)
+         WHERE (m.sender_id = $1 AND m.receiver_id = $2)
+            OR (m.sender_id = $3 AND m.receiver_id = $4)
          ORDER BY m.epoch ASC, m.id ASC`,
         [userIdA, userIdB, userIdB, userIdA]
       );

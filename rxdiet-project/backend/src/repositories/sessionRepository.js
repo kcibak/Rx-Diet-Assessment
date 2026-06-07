@@ -3,19 +3,19 @@ const { getDbPool } = require("../config/db");
 function createSessionRepository({ db = getDbPool() } = {}) {
   return {
     async createSession({ userId, tokenHash, expiresAt }) {
-      await db.execute(
+      await db.query(
         `INSERT INTO sessions (user_id, token_hash, expires_at)
-         VALUES (?, ?, ?)`,
+         VALUES ($1, $2, $3)`,
         [userId, tokenHash, expiresAt]
       );
     },
 
     async findSessionByTokenHash(tokenHash) {
-      const [rows] = await db.execute(
+      const { rows } = await db.query(
         `SELECT s.id, s.user_id, s.token_hash, s.expires_at, u.public_id, u.email, u.password_hash, u.first_name, u.last_name
          FROM sessions s
          INNER JOIN users u ON u.id = s.user_id
-         WHERE s.token_hash = ?
+         WHERE s.token_hash = $1
          LIMIT 1`,
         [tokenHash]
       );
@@ -41,7 +41,7 @@ function createSessionRepository({ db = getDbPool() } = {}) {
     },
 
     async deleteSessionByTokenHash(tokenHash) {
-      await db.execute("DELETE FROM sessions WHERE token_hash = ?", [tokenHash]);
+      await db.query("DELETE FROM sessions WHERE token_hash = $1", [tokenHash]);
     },
   };
 }

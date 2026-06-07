@@ -33,7 +33,7 @@ function App() {
   const [statusType, setStatusType] = useState('info')
   const [apiStatus, setApiStatus] = useState({
     state: 'checking',
-    message: `Checking API at ${API_BASE_URL}`,
+    message: `Checking API${formatApiBaseUrlForMessage(API_BASE_URL)}`,
   })
   const [loading, setLoading] = useState({
     auth: false,
@@ -107,21 +107,21 @@ function App() {
     setLoading((current) => ({ ...current, health: true }))
     setApiStatus({
       state: 'checking',
-      message: `Checking API at ${API_BASE_URL}`,
+      message: `Checking API${formatApiBaseUrlForMessage(API_BASE_URL)}`,
     })
 
     try {
       await apiClient.checkHealth()
       setApiStatus({
         state: 'connected',
-        message: `API and database are reachable at ${apiClient.baseUrl}`,
+        message: `API and database are reachable${formatApiBaseUrlForMessage(apiClient.baseUrl)}`,
       })
     } catch (error) {
       setApiStatus({
         state: 'disconnected',
         message:
-          `Backend unreachable at ${apiClient.baseUrl}. ` +
-          'Start the stack with `docker compose up --build`.',
+          `Backend unreachable${formatApiBaseUrlForMessage(apiClient.baseUrl)}. ` +
+          'Start the backend and set VITE_API_BASE_URL for local frontend dev.',
       })
     } finally {
       setLoading((current) => ({ ...current, health: false }))
@@ -410,6 +410,10 @@ function App() {
       </div>
     </div>
   )
+}
+
+function formatApiBaseUrlForMessage(baseUrl) {
+  return baseUrl ? ` at ${baseUrl}` : ''
 }
 
 export default App

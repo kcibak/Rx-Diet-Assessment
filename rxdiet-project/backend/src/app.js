@@ -1,5 +1,7 @@
 const cors = require("cors");
 const express = require("express");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const { createBlockUserController } = require("./controllers/blockUserController");
 const { createHealthController } = require("./controllers/healthController");
@@ -47,9 +49,16 @@ function createApp({
   app.use(cors());
   app.use(express.json());
 
-  app.get("/", (req, res) => {
+  app.get("/api", (req, res) => {
     res.json({ message: "API running" });
   });
+
+  if (process.env.NODE_ENV !== "production") {
+    app.get("/", (req, res) => {
+      res.json({ message: "API running" });
+    });
+  }
+
   app.get("/health", createHealthController({ checkHealth: resolvedCheckHealth }));
 
   app.post("/register", createRegisterController({ registerUser: resolvedRegisterUser }));
@@ -60,10 +69,26 @@ function createApp({
   app.post("/send_message", requireAuth, createSendMessageController({ sendMessage: resolvedSendMessage }));
   app.get("/list_all_users", requireAuth, createListAllUsersController({ listAllUsers: resolvedListAllUsers }));
 
+  serveFrontend(app);
+
   app.use(notFoundHandler);
   app.use(errorHandler);
 
   return app;
+}
+
+function serveFrontend(app) {
+  const frontendDistPath = path.join(__dirname, "../../dist");
+  const indexPath = path.join(frontendDistPath, "index.html");
+
+  if (!fs.existsSync(indexPath)) {
+    return;
+  }
+
+  app.use(express.static(frontendDistPath));
+  app.get(/.*/, (req, res) => {
+    res.sendFile(indexPath);
+  });
 }
 
 module.exports = {

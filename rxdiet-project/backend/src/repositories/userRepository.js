@@ -42,9 +42,9 @@ function normalizePaginationValue(value, fallback) {
 function createUserRepository({ db = getDbPool() } = {}) {
   return {
     async createUser({ publicId, email, passwordHash, firstName, lastName }) {
-      await db.execute(
+      await db.query(
         `INSERT INTO users (public_id, email, password_hash, first_name, last_name)
-         VALUES (?, ?, ?, ?, ?)`,
+         VALUES ($1, $2, $3, $4, $5)`,
         [publicId, email, passwordHash, firstName, lastName]
       );
 
@@ -57,10 +57,10 @@ function createUserRepository({ db = getDbPool() } = {}) {
     },
 
     async findUserByEmail(email) {
-      const [rows] = await db.execute(
+      const { rows } = await db.query(
         `SELECT id, public_id, email, password_hash, first_name, last_name
          FROM users
-         WHERE email = ?
+         WHERE email = $1
          LIMIT 1`,
         [email]
       );
@@ -69,10 +69,10 @@ function createUserRepository({ db = getDbPool() } = {}) {
     },
 
     async findUserByPublicId(publicId) {
-      const [rows] = await db.execute(
+      const { rows } = await db.query(
         `SELECT id, public_id, email, password_hash, first_name, last_name
          FROM users
-         WHERE public_id = ?
+         WHERE public_id = $1
          LIMIT 1`,
         [publicId]
       );
@@ -85,12 +85,11 @@ function createUserRepository({ db = getDbPool() } = {}) {
         return [];
       }
 
-      const placeholders = publicIds.map(() => "?").join(", ");
-      const [rows] = await db.execute(
+      const { rows } = await db.query(
         `SELECT id, public_id, email, password_hash, first_name, last_name
          FROM users
-         WHERE public_id IN (${placeholders})`,
-        publicIds
+         WHERE public_id = ANY($1::uuid[])`,
+        [publicIds]
       );
 
       return rows.map(mapUserRow);
@@ -101,12 +100,11 @@ function createUserRepository({ db = getDbPool() } = {}) {
         return [];
       }
 
-      const placeholders = userIds.map(() => "?").join(", ");
-      const [rows] = await db.execute(
+      const { rows } = await db.query(
         `SELECT id, public_id, email, password_hash, first_name, last_name
          FROM users
-         WHERE id IN (${placeholders})`,
-        userIds
+         WHERE id = ANY($1::int[])`,
+        [userIds]
       );
 
       return rows.map(mapUserRow);
@@ -115,13 +113,13 @@ function createUserRepository({ db = getDbPool() } = {}) {
     async listUsersExcludingPublicId(requesterPublicId, { limit = 50, offset = 0 } = {}) {
       const normalizedLimit = normalizePaginationValue(limit, 50);
       const normalizedOffset = normalizePaginationValue(offset, 0);
-      const [rows] = await db.query(
+      const { rows } = await db.query(
         `SELECT id, public_id, email, first_name, last_name
          FROM users
-         WHERE public_id <> ?
+         WHERE public_id <> $1
          ORDER BY first_name ASC, last_name ASC, email ASC
-         LIMIT ${normalizedLimit} OFFSET ${normalizedOffset}`,
-        [requesterPublicId]
+         LIMIT $2 OFFSET $3`,
+        [requesterPublicId, normalizedLimit, normalizedOffset]
       );
 
       return rows.map(mapUserSummaryRow);
@@ -130,19 +128,19 @@ function createUserRepository({ db = getDbPool() } = {}) {
     async listUsersExcludingPublicIdBlockedByUser(requesterPublicId, blockerId, { limit = 50, offset = 0 } = {}) {
       const normalizedLimit = normalizePaginationValue(limit, 50);
       const normalizedOffset = normalizePaginationValue(offset, 0);
-      const [rows] = await db.query(
+      const { rows } = await db.query(
         `SELECT u.id, u.public_id, u.email, u.first_name, u.last_name
          FROM users u
-         WHERE u.public_id <> ?
+         WHERE u.public_id <> $1
            AND NOT EXISTS (
              SELECT 1
              FROM user_blocks ub
-             WHERE ub.blocker_id = ?
+             WHERE ub.blocker_id = $2
                AND ub.blocked_id = u.id
            )
          ORDER BY u.first_name ASC, u.last_name ASC, u.email ASC
-         LIMIT ${normalizedLimit} OFFSET ${normalizedOffset}`,
-        [requesterPublicId, blockerId]
+         LIMIT $3 OFFSET $4`,
+        [requesterPublicId, blockerId, normalizedLimit, normalizedOffset]
       );
 
       return rows.map(mapUserSummaryRow);

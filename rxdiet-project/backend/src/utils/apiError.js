@@ -93,7 +93,7 @@ const errorCatalog = {
 };
 
 function isDuplicateEntryError(error) {
-  return error && error.code === "ER_DUP_ENTRY";
+  return error && error.code === "23505";
 }
 
 module.exports = {

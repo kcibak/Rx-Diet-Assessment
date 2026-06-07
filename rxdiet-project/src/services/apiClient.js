@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE_URL = 'http://localhost:3000'
+const DEFAULT_API_BASE_URL = ''
 
 export function normalizeApiBaseUrl(value) {
   return String(value || DEFAULT_API_BASE_URL).replace(/\/+$/, '')
@@ -34,8 +34,8 @@ export function createApiClient({ baseUrl, getAuthToken, onConnected, onDisconne
     } catch (error) {
       if (isNetworkError(error)) {
         const message =
-          `Backend unreachable at ${normalizedBaseUrl}. ` +
-          'Make sure Docker is running and start the stack with `docker compose up --build`.'
+          `Backend unreachable${formatBaseUrlForMessage(normalizedBaseUrl)}. ` +
+          'Make sure the backend is running and VITE_API_BASE_URL is set for local frontend dev.'
 
         if (onDisconnected) {
           onDisconnected(message)
@@ -64,8 +64,8 @@ export function createApiClient({ baseUrl, getAuthToken, onConnected, onDisconne
       } catch (error) {
         if (isNetworkError(error)) {
           const message =
-            `Backend unreachable at ${normalizedBaseUrl}. ` +
-            'Make sure Docker is running and start the stack with `docker compose up --build`.'
+            `Backend unreachable${formatBaseUrlForMessage(normalizedBaseUrl)}. ` +
+            'Make sure the backend is running and VITE_API_BASE_URL is set for local frontend dev.'
 
           if (onDisconnected) {
             onDisconnected(message)
@@ -161,6 +161,10 @@ function formatHealthFailureMessage(payload) {
 
 function isNetworkError(error) {
   return error instanceof TypeError
+}
+
+function formatBaseUrlForMessage(baseUrl) {
+  return baseUrl ? ` at ${baseUrl}` : ''
 }
 
 export { DEFAULT_API_BASE_URL }

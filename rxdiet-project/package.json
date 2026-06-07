@@ -11,6 +11,8 @@
     "dev:frontend": "vite",
     "dev:backend": "npm run dev -w backend",
     "build": "vite build",
+    "start": "npm run start -w backend",
+    "security:audit": "npm audit --audit-level=high",
     "preview": "vite preview"
   },
   "dependencies": {
