@@ -1,3 +1,5 @@
+// Implements the business rules for blocking another user.
+// It validates requester ownership, resolves public IDs to database IDs, and records the block relationship.
 const { createUserBlockRepository } = require("../repositories/userBlockRepository");
 const { createUserRepository } = require("../repositories/userRepository");
 const { ApiError, errorCatalog, isDuplicateEntryError } = require("../utils/apiError");
@@ -119,6 +121,4 @@ function uniqueIds(values) {
 
 module.exports = {
   createBlockUser,
-  normalizeBlockUserInput,
-  validateBlockUserInput,
 };

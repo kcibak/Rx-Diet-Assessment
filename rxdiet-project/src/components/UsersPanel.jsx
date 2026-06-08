@@ -1,3 +1,5 @@
+// Shows the authenticated user's available contacts and action controls.
+// It receives user data, selection state, and refresh/block handlers from the app container.
 import UserActionControls from './UserActionControls'
 import { uiStyles as styles } from '../styles/uiStyles'
 

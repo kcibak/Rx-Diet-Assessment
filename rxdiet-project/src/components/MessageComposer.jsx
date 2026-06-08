@@ -1,3 +1,5 @@
+// Provides the textarea and send button used to submit a message to the selected user.
+// It remains controlled by parent state so validation and API calls stay centralized.
 import { uiStyles as styles } from '../styles/uiStyles'
 
 function MessageComposer({

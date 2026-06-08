@@ -1,3 +1,5 @@
+// Displays conversation state for the selected user and wires message sending into the composer.
+// Empty, loading, and unauthenticated states are rendered from parent-provided props.
 import MessageComposer from './MessageComposer'
 import { uiStyles as styles } from '../styles/uiStyles'
 

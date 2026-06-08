@@ -1,3 +1,5 @@
+// Centralizes API error responses for unknown routes, validation failures, and service errors.
+// Known ApiError instances keep their structured response shape while unexpected failures become generic 500s.
 const { ApiError, errorCatalog } = require("../utils/apiError");
 
 function notFoundHandler(req, res) {

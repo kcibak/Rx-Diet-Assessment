@@ -1,3 +1,5 @@
+// Creates and shares the PostgreSQL connection pool used by repositories.
+// The pool is configured from DATABASE_URL and exposes a lightweight health check query.
 const { Pool } = require("pg");
 
 let pool;

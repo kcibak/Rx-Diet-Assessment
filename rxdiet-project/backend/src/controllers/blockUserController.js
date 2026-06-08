@@ -1,3 +1,5 @@
+// Adapts the block-user service to the POST /block_user HTTP endpoint.
+// The controller passes request body data through and delegates errors to Express middleware.
 function createBlockUserController({ blockUser }) {
   return async function blockUserController(req, res, next) {
     try {

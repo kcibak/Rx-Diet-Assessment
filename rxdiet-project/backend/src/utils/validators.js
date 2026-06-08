@@ -1,3 +1,5 @@
+// Provides reusable validation predicates for public IDs, email addresses, and passwords.
+// Service modules call these helpers before touching repository methods.
 // Stricter email pattern: no consecutive dots, domain labels separated by dots, TLD length >= 2.
 const EMAIL_PATTERN = /^(?!.*\.\.)[A-Za-z0-9](?:[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]*[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/;
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).{8,128}$/;

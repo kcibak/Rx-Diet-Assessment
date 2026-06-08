@@ -1,3 +1,5 @@
+// Adapts the registration service to the POST /register HTTP endpoint.
+// The controller returns the created user response and delegates validation failures to error middleware.
 function createRegisterController({ registerUser }) {
   return async function registerController(req, res, next) {
     try {

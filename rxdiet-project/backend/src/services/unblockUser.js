@@ -1,3 +1,5 @@
+// Implements removal of an existing user block.
+// It validates requester ownership, resolves the blocked user, and reports when no relationship exists.
 const { createUserBlockRepository } = require("../repositories/userBlockRepository");
 const { createUserRepository } = require("../repositories/userRepository");
 const { ApiError, errorCatalog } = require("../utils/apiError");
@@ -119,6 +121,4 @@ function uniqueIds(values) {
 
 module.exports = {
   createUnblockUser,
-  normalizeUnblockUserInput,
-  validateUnblockUserInput,
 };

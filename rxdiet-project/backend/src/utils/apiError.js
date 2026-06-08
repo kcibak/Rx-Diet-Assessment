@@ -1,3 +1,5 @@
+// Defines the structured API error type and shared catalog of response errors.
+// Services throw these errors so middleware can return consistent status codes and JSON payloads.
 class ApiError extends Error {
   constructor(statusCode, errorCode, errorTitle, errorMessage) {
     super(errorMessage);

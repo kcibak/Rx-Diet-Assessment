@@ -1,3 +1,5 @@
+// Encapsulates SQL operations for login sessions.
+// Sessions store hashed bearer tokens and join back to users during authentication.
 const { getDbPool } = require("../config/db");
 
 function createSessionRepository({ db = getDbPool() } = {}) {
@@ -38,10 +40,6 @@ function createSessionRepository({ db = getDbPool() } = {}) {
           lastName: rows[0].last_name,
         },
       };
-    },
-
-    async deleteSessionByTokenHash(tokenHash) {
-      await db.query("DELETE FROM sessions WHERE token_hash = $1", [tokenHash]);
     },
   };
 }

@@ -1,3 +1,5 @@
+// Implements user registration with input validation and password hashing.
+// New users receive a generated public UUID while duplicate emails are translated into API errors.
 const { randomUUID } = require("node:crypto");
 
 const { createUserRepository } = require("../repositories/userRepository");
@@ -72,6 +74,4 @@ function validateRegistrationInput({ email, password, firstName, lastName }) {
 
 module.exports = {
   createRegisterUser,
-  normalizeRegistrationInput,
-  validateRegistrationInput,
 };

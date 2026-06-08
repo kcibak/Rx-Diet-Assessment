@@ -1,3 +1,5 @@
+// Validates bearer tokens by hashing them and looking up active sessions.
+// Successful authentication returns session and user identity details for protected route middleware.
 const { createSessionRepository } = require("../repositories/sessionRepository");
 const { ApiError, errorCatalog } = require("../utils/apiError");
 const { isExpired } = require("../utils/dateTime");

@@ -1,3 +1,5 @@
+# Builds the production Docker image, pushes it to Artifact Registry, and deploys Cloud Run.
+# Substitutions define the service, region, repository, and image used by the deployment.
 steps:
   - name: gcr.io/cloud-builders/docker
     args:

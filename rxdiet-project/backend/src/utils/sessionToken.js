@@ -1,3 +1,5 @@
+// Creates random bearer tokens and hashes them before database storage.
+// The raw token is returned only to the client at login time.
 const { createHash, randomBytes } = require("node:crypto");
 
 function createSessionToken() {

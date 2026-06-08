@@ -1,3 +1,5 @@
+// Starts the Express server after loading local environment variables.
+// The app factory is kept separate so route wiring can be reused without immediately binding a port.
 require("dotenv").config({ quiet: true });
 
 const { createApp } = require("./app");

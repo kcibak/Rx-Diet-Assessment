@@ -1,3 +1,5 @@
+// Centralizes inline style objects shared by the React UI components.
+// Keeping styles here makes the demo layout consistent without introducing a separate CSS pipeline.
 export const uiStyles = {
   page: {
     minHeight: '100vh',

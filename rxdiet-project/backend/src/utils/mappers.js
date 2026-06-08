@@ -1,3 +1,5 @@
+// Converts internal repository objects into public API response payloads.
+// These mappers keep database field names and internal IDs from leaking to clients.
 function toUserResponse(user) {
   return {
     user_id: user.publicId,

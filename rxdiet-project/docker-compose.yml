@@ -1,3 +1,5 @@
+# Runs the production container locally using the Dockerfile and variables from .env.
+# This is intended for app smoke testing and does not provision a database.
 services:
   app:
     build:

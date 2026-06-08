@@ -1,3 +1,5 @@
+// Owns the React demo application's state, API client setup, and user workflows.
+// It coordinates authentication, user loading, messaging, block/unblock actions, and health status display.
 import { useEffect, useMemo, useState } from 'react'
 import AuthPanel from './components/AuthPanel'
 import ChatPanel from './components/ChatPanel'

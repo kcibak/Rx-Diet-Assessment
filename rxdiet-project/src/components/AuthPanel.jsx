@@ -1,3 +1,5 @@
+// Renders the login/register controls and current authenticated user summary.
+// It delegates form state and submit behavior to the parent app through callback props.
 import { uiStyles as styles } from '../styles/uiStyles'
 
 function AuthPanel({

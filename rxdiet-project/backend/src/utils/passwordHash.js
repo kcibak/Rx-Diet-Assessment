@@ -1,3 +1,5 @@
+// Hashes and verifies user passwords with Node's scrypt implementation.
+// Stored hashes include the algorithm name, salt, and derived key so verification can recompute safely.
 const { randomBytes, scrypt, timingSafeEqual } = require("node:crypto");
 const { promisify } = require("node:util");
 

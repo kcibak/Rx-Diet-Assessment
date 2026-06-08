@@ -1,3 +1,5 @@
+// Assembles the Express application, API routes, middleware, and frontend static serving.
+// Service dependencies can be injected for testing, while production defaults wire to PostgreSQL-backed implementations.
 const cors = require("cors");
 const express = require("express");
 const fs = require("node:fs");

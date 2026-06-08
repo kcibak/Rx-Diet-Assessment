@@ -1,3 +1,5 @@
+// Wraps browser fetch calls for the backend API endpoints used by the React app.
+// It normalizes the base URL, attaches bearer tokens, and converts API failures into user-facing errors.
 const DEFAULT_API_BASE_URL = ''
 
 export function normalizeApiBaseUrl(value) {
@@ -50,7 +52,6 @@ export function createApiClient({ baseUrl, getAuthToken, onConnected, onDisconne
 
   return {
     baseUrl: normalizedBaseUrl,
-    request,
     async checkHealth() {
       try {
         const response = await fetch(`${normalizedBaseUrl}/health`)

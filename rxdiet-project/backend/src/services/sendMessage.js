@@ -1,3 +1,5 @@
+// Implements message creation between two users.
+// It verifies sender authorization, resolves users, blocks delivery across active block relationships, and stores the message.
 const { randomUUID } = require("node:crypto");
 
 const { createUserBlockRepository } = require("../repositories/userBlockRepository");
@@ -101,6 +103,4 @@ function uniquePublicIds(publicIds) {
 
 module.exports = {
   createSendMessage,
-  normalizeSendMessageInput,
-  validateSendMessageInput,
 };

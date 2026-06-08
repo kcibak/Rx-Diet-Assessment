@@ -1,3 +1,5 @@
+// Authenticates bearer-token protected routes and attaches authenticated user identifiers to the request.
+// Downstream services use the injected IDs to enforce requester ownership without re-reading headers.
 const { errorCatalog } = require("../utils/apiError");
 
 function createRequireAuth({ authenticateSession }) {

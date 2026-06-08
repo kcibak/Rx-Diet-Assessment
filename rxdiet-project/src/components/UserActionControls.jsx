@@ -1,3 +1,5 @@
+// Renders per-user actions for messaging, blocking, and unblocking.
+// Button disabled states reflect loading and known block status from the parent panel.
 import { uiStyles as styles } from '../styles/uiStyles'
 
 function UserActionControls({

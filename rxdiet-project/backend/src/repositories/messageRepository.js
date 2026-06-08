@@ -1,3 +1,5 @@
+// Encapsulates SQL reads and writes for message records.
+// Repository methods map joined database rows into the service-layer message shape.
 const { getDbPool } = require("../config/db");
 
 function mapMessageRow(row) {

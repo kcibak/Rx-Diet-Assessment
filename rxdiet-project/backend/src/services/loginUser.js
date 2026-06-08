@@ -1,7 +1,9 @@
+// Implements login by validating credentials and creating a bearer-token session.
+// Password checks use scrypt hashes, and only the hashed session token is persisted.
 const { createUserRepository } = require("../repositories/userRepository");
 const { createSessionRepository } = require("../repositories/sessionRepository");
 const { ApiError, errorCatalog } = require("../utils/apiError");
-const { addDays, formatDateAsIsoString } = require("../utils/dateTime");
+const { addDays } = require("../utils/dateTime");
 const { createSessionToken, hashToken } = require("../utils/sessionToken");
 const { toLoginResponse } = require("../utils/mappers");
 const { verifyPassword } = require("../utils/passwordHash");
@@ -81,6 +83,4 @@ function validateLoginInput({ email, password }) {
 
 module.exports = {
   createLoginUser,
-  normalizeLoginInput,
-  validateLoginInput,
 };

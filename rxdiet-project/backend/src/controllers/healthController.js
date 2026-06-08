@@ -1,3 +1,5 @@
+// Provides server and database health-check controllers.
+// The database variant delegates to an injected check function and returns 503 when the query fails.
 function createHealthController() {
   return async function healthController(req, res) {
     res.status(200).json({

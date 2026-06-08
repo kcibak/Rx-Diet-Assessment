@@ -1,3 +1,5 @@
+// Implements conversation retrieval between two users.
+// It validates requester access, blocks reads across active block relationships, and maps stored messages for API responses.
 const { createMessageRepository } = require("../repositories/messageRepository");
 const { createUserBlockRepository } = require("../repositories/userBlockRepository");
 const { createUserRepository } = require("../repositories/userRepository");
@@ -90,6 +92,4 @@ function uniquePublicIds(publicIds) {
 
 module.exports = {
   createViewMessages,
-  normalizeViewMessagesInput,
-  validateViewMessagesInput,
 };

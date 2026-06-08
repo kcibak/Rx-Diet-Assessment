@@ -1,3 +1,5 @@
+// Encapsulates SQL operations for user block relationships.
+// The service layer uses this repository to create, delete, and check blocks between users.
 const { getDbPool } = require("../config/db");
 
 function createUserBlockRepository({ db = getDbPool() } = {}) {
@@ -31,17 +33,6 @@ function createUserBlockRepository({ db = getDbPool() } = {}) {
       );
 
       return rows.length > 0;
-    },
-
-    async listBlockedUserIds(blockerId) {
-      const { rows } = await db.query(
-        `SELECT blocked_id
-         FROM user_blocks
-         WHERE blocker_id = $1`,
-        [blockerId]
-      );
-
-      return rows.map((row) => row.blocked_id);
     },
   };
 }

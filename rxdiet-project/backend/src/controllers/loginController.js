@@ -1,3 +1,5 @@
+// Adapts the login service to the POST /login HTTP endpoint.
+// Successful calls return the authenticated user payload and bearer token.
 function createLoginController({ loginUser }) {
   return async function loginController(req, res, next) {
     try {

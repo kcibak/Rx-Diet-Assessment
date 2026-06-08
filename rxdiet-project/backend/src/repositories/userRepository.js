@@ -1,3 +1,5 @@
+// Encapsulates SQL operations for user records and user listing.
+// It maps database column names into the camelCase objects expected by services.
 const { getDbPool } = require("../config/db");
 
 function mapUserRow(row) {

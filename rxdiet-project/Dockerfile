@@ -1,3 +1,5 @@
+# Builds a production image that compiles the Vite frontend and runs the Express backend.
+# The final container serves both API routes and static frontend assets from one Node process.
 FROM node:20 AS base
 
 WORKDIR /app

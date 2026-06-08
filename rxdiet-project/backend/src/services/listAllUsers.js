@@ -1,3 +1,5 @@
+// Implements user listing for an authenticated requester.
+// It validates requester identity, applies pagination, and can optionally exclude users blocked by the requester.
 const { createUserRepository } = require("../repositories/userRepository");
 const { ApiError, errorCatalog } = require("../utils/apiError");
 const { toUserResponse } = require("../utils/mappers");
@@ -99,6 +101,4 @@ function validatePagination({ limit, offset }) {
 
 module.exports = {
   createListAllUsers,
-  normalizeListAllUsersInput,
-  validateListAllUsersInput,
 };
