@@ -32,7 +32,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  _SERVICE_NAME: rxdiet-service
+  _SERVICE_NAME: rxdiet-assess
   _REGION: us-central1
-  _REPOSITORY: rxdiet-repository
+  _REPOSITORY: rxdiet-repo
   _IMAGE: rxdiet-image
