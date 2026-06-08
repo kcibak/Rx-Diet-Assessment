@@ -111,39 +111,52 @@ Compose does not start a database. Production deployment does not require Docker
 
 ## Google Cloud Run Deployment
 
-Set these Cloud Run environment variables:
+Store the Neon connection string in Secret Manager instead of committing or passing it as plaintext:
 
 ```bash
-DATABASE_URL=postgresql://USER:PASSWORD@HOST.neon.tech/DB_NAME?sslmode=require
-SESSION_DURATION_DAYS=7
-NODE_ENV=production
+gcloud secrets create rxdiet-database-url --replication-policy=automatic
+printf '%s' 'postgresql://USER:PASSWORD@HOST.neon.tech/DB_NAME?sslmode=require' \
+  | gcloud secrets versions add rxdiet-database-url --data-file=-
 ```
 
-Cloud Run injects `PORT`; the backend reads `process.env.PORT`.
-
-Example deploy from source:
+Grant the Cloud Run runtime service account access to the secret:
 
 ```bash
-cd rxdiet-project
-gcloud run deploy rxdiet-app \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DB_NAME?sslmode=require",SESSION_DURATION_DAYS="7",NODE_ENV="production"
+gcloud secrets add-iam-policy-binding rxdiet-database-url \
+  --member="serviceAccount:RUNTIME_SERVICE_ACCOUNT" \
+  --role="roles/secretmanager.secretAccessor"
 ```
 
-Build and push with Docker:
+The checked-in `cloudbuild.yaml` deploys the built image with:
 
 ```bash
-cd rxdiet-project
-docker build -t gcr.io/PROJECT_ID/rxdiet-app .
-docker push gcr.io/PROJECT_ID/rxdiet-app
-gcloud run deploy rxdiet-app \
-  --image gcr.io/PROJECT_ID/rxdiet-app \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DB_NAME?sslmode=require",SESSION_DURATION_DAYS="7",NODE_ENV="production"
+--set-secrets DATABASE_URL=rxdiet-database-url:latest
+--set-env-vars NODE_ENV=production,SESSION_DURATION_DAYS=7
 ```
+
+Cloud Run injects `PORT`; the backend reads `process.env.PORT`. Do not commit a real `.env` file.
+
+Run the Cloud Build trigger, or submit the build manually from the repository root:
+
+```bash
+gcloud builds submit --config cloudbuild.yaml
+```
+
+After deployment:
+
+- `GET /health` should return `200` when the server is running.
+- `GET /health/db` should return `200` only when the Neon connection string, secret permissions, network access, and schema are correct.
+- If the revision fails, check Cloud Run revision logs first; Cloud Build logs can show a successful image build even when the service cannot start.
+
+Manual checklist:
+
+1. Create the Secret Manager secret named `rxdiet-database-url`.
+2. Add the Neon Postgres connection string as the latest secret version.
+3. Identify the Cloud Run runtime service account.
+4. Grant that service account `Secret Manager Secret Accessor` on `rxdiet-database-url`.
+5. Confirm the Artifact Registry repository exists in `us-central1`.
+6. Run the Cloud Build trigger.
+7. If deployment fails, check Cloud Run revision logs, not just Cloud Build logs.
 
 ## Checks
 
@@ -160,7 +173,8 @@ Public endpoints:
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | `GET` | `/api` | API status |
-| `GET` | `/health` | Health check |
+| `GET` | `/health` | Server health check |
+| `GET` | `/health/db` | Database health check |
 | `POST` | `/register` | Register a user |
 | `POST` | `/login` | Authenticate a user |
 

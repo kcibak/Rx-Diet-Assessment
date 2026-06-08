@@ -24,6 +24,10 @@ steps:
       - --region
       - ${_REGION}
       - --allow-unauthenticated
+      - --set-secrets
+      - DATABASE_URL=rxdiet-database-url:latest
+      - --set-env-vars
+      - NODE_ENV=production,SESSION_DURATION_DAYS=7
 
 images:
   - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}

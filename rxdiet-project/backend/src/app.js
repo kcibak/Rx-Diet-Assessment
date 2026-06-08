@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const { createBlockUserController } = require("./controllers/blockUserController");
-const { createHealthController } = require("./controllers/healthController");
+const { createDatabaseHealthController, createHealthController } = require("./controllers/healthController");
 const { createListAllUsersController } = require("./controllers/listAllUsersController");
 const { createLoginController } = require("./controllers/loginController");
 const { createRegisterController } = require("./controllers/registerController");
@@ -59,7 +59,8 @@ function createApp({
     });
   }
 
-  app.get("/health", createHealthController({ checkHealth: resolvedCheckHealth }));
+  app.get("/health", createHealthController());
+  app.get("/health/db", createDatabaseHealthController({ checkHealth: resolvedCheckHealth }));
 
   app.post("/register", createRegisterController({ registerUser: resolvedRegisterUser }));
   app.post("/login", createLoginController({ loginUser: resolvedLoginUser }));

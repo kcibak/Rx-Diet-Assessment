@@ -13,6 +13,7 @@ function createDbPool() {
       ? { rejectUnauthorized: false }
       : false,
     max: Number(process.env.DB_POOL_MAX) || 10,
+    connectionTimeoutMillis: Number(process.env.DB_CONNECTION_TIMEOUT_MS) || 5000,
   });
 }
 
